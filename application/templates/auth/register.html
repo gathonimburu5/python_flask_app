@@ -1,0 +1,54 @@
+{% extends 'layout/auth_layout.html' %}
+
+{% block content %}
+<div class="my-auto">
+    <div> <h5 class="text-primary">Register Account Now</h5> </div>
+    <div class="mt-4">
+        <form method="post" action="{{ url_for('auth_ctl.register_page') }}" >
+            <div class="mb-3">
+                <label class="form-label">Full Names <span class="text-danger">*</span></label>
+                <input type="text" name="full_names" class="form-control" placeholder="enter user full names" oninput="this.value = this.value.toUpperCase()" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                <input type="email" name="email_address" class="form-control" placeholder="enter email address" oninput="this.value = this.value.toLowerCase()" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                <input type="tel" name="phone_number" class="form-control" placeholder="enter phone number" min="10" pattern="[0-9]{4}[0-9]{3}[0-9]{3}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Postal Address <span class="text-danger">*</span></label>
+                <input type="text" name="postal_address" class="form-control" placeholder="enter postal address" oninput="this.value = this.value.toUpperCase()" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Physical Address <span class="text-danger">*</span></label>
+                <input type="text" name="physical_address" class="form-control" placeholder="enter physical address" oninput="this.value = this.value.toUpperCase()" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">County <span class="text-danger">*</span></label>
+                <input type="text" name="county" class="form-control" placeholder="enter user county" oninput="this.value = this.value.toUpperCase()" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Date Of Birth <span class="text-danger">*</span></label>
+                <input type="date" name="dob" class="form-control" placeholder="enter dob" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Username <span class="text-danger">*</span></label>
+                <input type="text" name="username" class="form-control" placeholder="enter username" oninput="this.value = this.value.toLowerCase()" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password <span class="text-danger">*</span></label>
+                <input type="password" name="password" placeholder="enter user password" class="form-control" min="8" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                <input type="password" name="confirm_password" placeholder="enter confirm password" class="form-control" min="8" required>
+            </div>
+            <div> <p class="mb-0">By registering you agree to our <a href="#" class="text-primary">Terms of Use</a></p> </div>
+            <div class="mt-4 d-grid"> <button type="submit" class="btn btn-primary waves-effect waves-light">Sign Up</button> </div>
+        </form>
+        <div class="mt-5 text-center"> <p>Already have an account ? <a href="{{ url_for('auth_ctl.login_page') }}" class="fw-medium text-primary"> Login</a> </p> </div>
+    </div>
+</div>
+{% endblock %}

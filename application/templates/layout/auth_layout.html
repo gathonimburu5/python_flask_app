@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>{{ tittle }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+        <meta content="Themesbrand" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="{{ url_for('static', filename='assets/images/favicon.ico') }}">
+        <!-- owl.carousel css -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/owl.carousel/assets/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/owl.carousel/assets/owl.theme.default.min.css') }}">
+        <!-- Bootstrap Css -->
+        <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="{{ url_for('static', filename='assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="{{ url_for('static', filename='assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
+        <!-- App js -->
+        <script src="{{ url_for('static', filename='assets/js/plugin.js') }}"></script>
+
+        <style>
+            .toast.success { background-color: #19e248; }
+            .toast.error { background-color: #e71325; }
+        </style>
+    </head>
+
+    <body class="auth-body-bg">
+        <div>
+
+            <div class="position-fixed top-0 end-0 end-0 p-3" style="z-index: 1005;">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="toast fade show align-items-center text-white border-0 {{ category }}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                                <div class="d-flex">
+                                    <div class="toast-body"> {{ message }} </div>
+                                    <button type="button" class="btn-close btn-close-white me-2 m-auto d-none" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <div class="container-fluid p-0">
+                <div class="row g-0">
+                    <div class="col-xl-8">
+                        <div class="auth-full-bg pt-lg-5 p-4">
+                            <div class="w-100">
+                                <div class="bg-overlay"></div>
+                                <div class="d-flex h-100 flex-column">
+                                    <div class="p-4 mt-auto">
+                                        <div class="row justify-content-center">
+                                            <div class="col-lg-7">
+                                                <div class="text-center">
+                                                    <h4 class="mb-3"><i class="bx bxs-quote-alt-left text-primary h1 align-middle me-3"></i><span class="text-primary">5k</span>+ Satisfied clients</h4>
+                                                    <div dir="ltr">
+                                                        <div class="owl-carousel owl-theme auth-review-carousel" id="auth-review-carousel">
+                                                            <div class="item">
+                                                                <div class="py-3">
+                                                                    <p class="font-size-16 mb-4">"Working with this team has been a pleasure. They delivered exactly what I needed, on time, and exceeded my expectations. I highly recommend them!."</p>
+                                                                    <div>
+                                                                        <h4 class="font-size-16 text-primary">Exceptional Service</h4>
+                                                                        <p class="font-size-14 mb-0">Site User</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="item">
+                                                                <div class="py-3">
+                                                                    <p class="font-size-16 mb-4">"Their professionalism and attention to detail were remarkable. The entire process was smooth, and I couldn’t be happier with the results."</p>
+                                                                    <div>
+                                                                        <h4 class="font-size-16 text-primary">Highly Professional</h4>
+                                                                        <p class="font-size-14 mb-0">Site User</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="item">
+                                                                <div class="py-3">
+                                                                    <p class="font-size-16 mb-4">"The level of dedication and quality of service was simply outstanding. They understood my requirements and delivered more than I had hoped for."</p>
+                                                                    <div>
+                                                                        <h4 class="font-size-16 text-primary">Outstanding Experience</h4>
+                                                                        <p class="font-size-14 mb-0">Site User</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end col -->
+
+                    <div class="col-xl-4">
+                        <div class="auth-full-page-content p-md-5 p-4">
+                            <div class="w-100">
+                                <div class="d-flex flex-column h-100">
+                                    {% block content %} {% endblock %}
+                                    <div class="mt-4 mt-md-5 text-center">
+                                        <p class="mb-0">© <script>document.write(new Date().getFullYear())</script> NgenX. Crafted with <i class="mdi mdi-heart text-danger"></i> by MIBM</p>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container-fluid -->
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="{{ url_for('static', filename='assets/libs/jquery/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='assets/libs/metismenu/metisMenu.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='assets/libs/simplebar/simplebar.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='assets/libs/node-waves/waves.min.js') }}"></script>
+        <!-- owl.carousel js -->
+        <script src="{{ url_for('static', filename='assets/libs/owl.carousel/owl.carousel.min.js') }}"></script>
+        <!-- auth-2-carousel init -->
+        <script src="{{ url_for('static', filename='assets/js/pages/auth-2-carousel.init.js') }}"></script>
+        <!-- App js -->
+        <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                // Automatically dispose alerts after 5 seconds
+                setTimeout(function() {
+                    $('.alert').alert('close');  // Dismiss alert
+                    $('.alert').alert('dispose'); // Remove from DOM
+                }, 5000);  // Time in milliseconds (5 seconds)
+
+                var toastElements = document.querySelectorAll('.toast');
+                toastElements.forEach(function(toastElement) {
+                    // Initialize Bootstrap toast instance
+                    var toast = new bootstrap.Toast(toastElement);
+                    // Show the toast
+                    toast.show();
+                    // Automatically close toast after 5 seconds
+                    setTimeout(function() {
+                        toast.hide();  // Hide the toast
+                        toast.dispose(); // Remove from DOM (optional)
+                    }, 5000); // Set the timeout in milliseconds (5000 = 5 seconds)
+                });
+
+            });
+        </script>
+    </body>
+</html>

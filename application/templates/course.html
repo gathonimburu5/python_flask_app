@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% block title %} App {% endblock %}
+
+{% block content %}
+
+<style>
+    .modal-confirm{
+        padding: 20px;
+        border-radius: 5px;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+    }
+    .modal-confirm .modal-footer{
+        border: none;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 13px;
+        padding: 10px 15px 25px;
+    }
+    .modal-confirm .modal-title{
+        text-align: center;
+    }
+</style>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">Course Details</h4>
+
+            <div class="page-title-right d-none">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Course</a></li>
+                    <li class="breadcrumb-item active">Details</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table align-middle table-nowrap mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <!-- <th style="width: 20px;">
+                                    <div class="form-check font-size-16 align-middle"> <input class="form-check-input" type="checkbox" id="transactionCheck01"> <label class="form-check-label" for="transactionCheck01"></label> </div>
+                                </th> -->
+                                <th class="align-middle">Ref</th>
+                                <th class="align-middle">Code</th>
+                                <th class="align-middle">Course Name</th>
+                                <th class="align-middle">Created On</th>
+                                <th class="align-middle">
+                                    <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".createModal"> 
+                                        <i class="fas fa-plus-circle"></i> New Course 
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr>
+                                <!-- <td> <div class="form-check font-size-16"> 
+                                    <input class="form-check-input" type="checkbox" id="transactionCheck02"> 
+                                    <label class="form-check-label" for="transactionCheck02"></label> </div> </td> -->
+                                <td>{{course.Id}}</td>
+                                <td>{{course.Code}}</td>
+                                <td> {{course.Name}} </td>
+                                <td> {{course.CreatedOn.strftime('%Y-%m-%d')}} </td>
+                                <td> 
+                                    <a href="{{ url_for('course_ctr.edit_pages', id=course.Id) }}" type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#editModal-{{course.Id}}"><i class="fas fa-edit"></i></a>
+                                    <a href="{{ url_for('course_ctr.delete_pages', id=course.Id) }}" type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ course.Id }}"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end table-responsive -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<!-- Modal  modal-dialog-centered  -->
+<div class="modal fade createModal" tabindex="-1" role="dialog" aria-labelledby="transaction-detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transaction-detailModalLabel">Create New Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('course_ctr.Index_Page') }}" method="post">
+                <div class="modal-body">
+                        <div class="row mb-1">
+                            <div class="form-group">
+                                <div class="col-12">
+                                    <label class="form-label">Course Code</label>
+                                    <input type="text" name="Code" placeholder="enter course code" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="form-group">
+                                <div class="col-12">
+                                    <label class="form-label">Course Name</label>
+                                    <input type="text" name="Name" placeholder="enter course name" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Create Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+
+ {% for course in courses %}
+<div class="modal fade" id="editModal-{{ course.Id }}" tabindex="-1" role="dialog" aria-labelledby="transaction-editModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transaction-editModal">Edit Course: {{ course.Name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('course_ctr.edit_pages', id=course.Id) }}" method="post">
+                <div class="modal-body">
+                        <div class="row mb-1 d-none">
+                            <div class="form-group">
+                                <div class="col-12">
+                                    <input type="text" name="CourseId" value="{{course.Id}}" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="form-group">
+                                <div class="col-12">
+                                    <label class="form-label">Course Code</label>
+                                    <input type="text" name="Code" value="{{ course.Code }}" placeholder="enter course code" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="form-group">
+                                <div class="col-12">
+                                    <label class="form-label">Course Name</label>
+                                    <input type="text" name="Name" value="{{ course.Name }}" placeholder="enter course name" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Update Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% for course in courses %}
+<div class="modal fade" id="deleteModal-{{ course.Id }}" tabindex="-1" role="dialog" aria-labelledby="transaction-deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-confirm modal-dialog-centered modal-m" role="document">
+        <div class="modal-content">
+            <form action="{{ url_for('course_ctr.delete_pages', id=course.Id) }}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="transaction-deleteModal" style="font-size: 25px;"> <i class="fas fa-trash"></i> </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-1">
+                        <div class="form-group">
+                            <div class="col-12">
+                                <h6 class="modal-title"> Do You Want To Delete <b>{{ course.Name }}</b> Course? </h6>
+                                <h6>Please Confirm Before Deleting, Once You confirm {{course.Name}} wont be available again!</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="form-group">
+                            <div class="col-12">
+                                <input type="hidden" name="Id" value="{{course.Id}}" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-m" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-m"><i class="bx bxs-trash"></i> Delete Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+<script src="{{ url_for('static', filename='assets/libs/jquery/jquery.min.js') }}"></script>
+<script>
+    $(document).ready(function(){
+        console.log("Hello there")
+    });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+{% block title %} Book Details {% endblock %}
+
+{% block content %}
+
+<style>
+    .modal-confirm{
+        padding: 20px;
+        border-radius: 5px;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+    }
+    .modal-confirm .modal-footer{
+        border: none;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 13px;
+        padding: 10px 15px 25px;
+    }
+    .modal-confirm .modal-title{
+        text-align: center;
+    }
+    .avatar-upload {
+        position: relative;
+        max-width: 205px;
+        margin: 50px auto;
+        .avatar-edit {
+            position: absolute;
+            right: 12px;
+            z-index: 1;
+            top: 10px;
+            input {
+                display: none;
+                + label {
+                    display: inline-block;
+                    width: 34px;
+                    height: 34px;
+                    margin-bottom: 0;
+                    border-radius: 100%;
+                    background: #FFFFFF;
+                    border: 1px solid transparent;
+                    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+                    cursor: pointer;
+                    font-weight: normal;
+                    transition: all .2s ease-in-out;
+                    &:hover {
+                        background: #f1f1f1;
+                        border-color: #d6d6d6;
+                    }
+                    &:after {
+                        content: "\f040";
+                        font-family: 'FontAwesome';
+                        color: #757575;
+                        position: absolute;
+                        top: 10px;
+                        left: 0;
+                        right: 0;
+                        text-align: center;
+                        margin: auto;
+                    }
+                }
+            }
+        }
+        .avatar-preview {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            /* border-radius: 100%; */
+            border: 6px solid #F8F8F8;
+            box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+            > div {
+                width: 100%;
+                height: 100%;
+                /* border-radius: 100%; */
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+        }
+    }
+</style>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">Book Record</h4>
+
+            <div class="page-title-right d-none">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Book</a></li>
+                    <li class="breadcrumb-item active">Records</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table align-middle table-nowrap mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="align-middle">Ref</th>
+                                <th class="align-middle">Tittle</th>
+                                <th class="align-middle">Author</th>
+                                <th class="align-middle">ISBN</th>
+                                <th class="align-middle">Published On</th>
+                                <th class="align-middle">Course Code</th>
+                                <th class="align-middle">Course Name</th>
+                                <th class="align-middle">Created On</th>
+                                <th class="align-middle">
+                                    <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".createModal"> <i class="fas fa-plus-circle"></i> New Book</button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for book in books %}
+                            <tr>
+                                <td>{{ book.Id }}</td>
+                                <td>{{ book.Tittle }}</td>
+                                <td>{{ book.Author }} </td>
+                                <td>{{ book.ISBN }} </td>
+                                <td>{{ book.PublishedOn.strftime('%Y-%m-%d') }} </td>
+                                <td>{{ book.Code }} </td>
+                                <td>{{ book.Name }} </td>
+                                <td>{{ book.CreatedOn.strftime('%Y-%m-%d') }} </td>
+                                <td> 
+                                    <a href="{{ url_for('book_ctrl.Book_Edit', id=book.Id) }}" type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#editModal-{{book.Id}}">
+                                        <i class="fas fa-edit"></i></a>
+                                    <a href="{{ url_for('book_ctrl.delete_book_page', id=book.Id) }}" type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#deleteModal-{{book.Id}}">
+                                        <i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end table-responsive -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<!-- Modal  modal-dialog-centered  -->
+<div class="modal fade createModal" tabindex="-1" role="dialog" aria-labelledby="transaction-detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transaction-detailModalLabel">Create New Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('book_ctrl.Book_Page') }}" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="avatar-upload mt-1">
+                                <div class="avatar-edit">
+                                    <input type="file" id="imageUpload" name="book_poster" accept=".png, .jpg, .jpeg" />
+                                    <label for="imageUpload"></label>
+                                </div>
+                                <div class="avatar-preview">
+                                    <div id="imagePreview" style="background-image: url('/static/assets/BookPoster/default1.png');">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Book Tittle</label>
+                                        <input type="text" name="book_tittle" class="form-control" placeholder="enter book tittle" oninput="this.value = this.value.toUpperCase()">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Book Author</label>
+                                        <input type="text" name="book_author" class="form-control" placeholder="enter book author" oninput="this.value = this.value.toUpperCase()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Book ISBN</label>
+                                        <input type="text" name="book_isbn" class="form-control" placeholder="enter books isbn" oninput="this.value = this.value.toUpperCase()">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Published On</label>
+                                        <input type="date" name="published_on" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Book Course</label>
+                                        <select name="course_id" class="form-select form-control">
+                                            <option value="">select book course</option>
+                                            {% for course in courses %}
+                                                <option value="{{ course.Id }}">{{ course.Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Create Book Records</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+
+{% for book in books %}
+<!-- Modal  modal-dialog-centered  -->
+<div class="modal fade" id="editModal-{{book.Id}}" tabindex="-1" role="dialog" aria-labelledby="transaction-detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transaction-detailModalLabel">Edit Book Record - {{ book.Tittle }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('book_ctrl.Book_Edit', id=book.Id) }}" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="avatar-upload mt-1">
+                                <div class="avatar-edit">
+                                    <input type="file" id="imageEditUpload" name="book_poster" accept=".png, .jpg, .jpeg" /> <label for="imageEditUpload"></label>
+                                </div>
+                                <div class="avatar-preview">
+                                    <div id="imageEditPreview" style="background-image: url('/static/assets/BookPoster/{{book.BookPoster}}');"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <input type="hidden" value="{{ book.Id }}" class="form-control">
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Book Tittle</label>
+                                        <input type="text" name="book_tittle" placeholder="enter book tittle" class="form-control" oninput="this.value = this.value.toUpperCase()" value="{{ book.Tittle }}">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Book Author</label>
+                                        <input type="text" name="book_author" placeholder="enter book author" class="form-control" oninput="this.value = this.value.toUpperCase()" value="{{ book.Author }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Book ISBN</label>
+                                        <input type="text" name="book_isbn" placeholder="enter book isbn" class="form-control" oninput="this.value = this.value.toUpperCase()" value="{{ book.ISBN }}">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Published On</label>
+                                        <input type="date" name="published_on" value="{{ book.PublishedOn.strftime('%Y-%m-%d') if book.PublishedOn else '' }}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Book Course</label>
+                                        <select name="course_id" class="form-control form-select">
+                                            <option value="">Choose Course</option>
+                                            {% for course in courses %}
+                                                <option value="{{ course.Id }}" {% if course.Id == book.CourseId %} selected {% endif %}> {{ course.Name }} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Update Book Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+{% endfor %}
+
+{% for book in books %}
+<div class="modal fade" id="deleteModal-{{ book.Id }}" tabindex="-1" role="dialog" aria-labelledby="transaction-deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-confirm modal-dialog-centered modal-m" role="document">
+        <div class="modal-content">
+            <form action="{{ url_for('book_ctrl.delete_book_page', id=book.Id) }}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="transaction-deleteModal" style="font-size: 25px;"> <i class="fas fa-trash"></i> </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-1">
+                        <div class="form-group">
+                            <div class="col-12">
+                                <h6 class="modal-title"> Do You Want To Delete <b>{{ book.Tittle }}</b> ? </h6>
+                                <h6>Please Confirm Before Deleting, Once You confirm, {{ book.Tittle }} wont be available again!</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="form-group">
+                            <div class="col-12">
+                                <input type="hidden" name="Id" value="{{book.Id}}" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-m" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-m"><i class="bx bxs-trash"></i> Delete Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script src="{{ url_for('static', filename='assets/libs/jquery/jquery.min.js') }}"></script>
+<script>
+    $(document).ready(function(){
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').css({ opacity: 0 }).show().animate({ opacity: 1 }, 300);
+                    //$('#imagePreview').fadeIn(300);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageUpload").change(function() {
+            readURL(this);
+        });
+
+        //edit uploads
+        function editReadUrl(input){
+            if(input.files && input.files[0]){
+                var reader = new FileReader();
+                reader.onload = function(e){
+                    $('#imageEditPreview').css('background-image', 'url('+e.target.result +')');
+                    $('#imageEditPreview').hide();
+                    $('#imageEditPreview').css({ opacity: 0 }).show().animate({ opacity: 1 }, 300);
+                    //$('#imageEditPreview').fadeIn(300);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageEditUpload").change(function() {
+            editReadUrl(this);
+        });
+    });
+</script>
+{% endblock %}

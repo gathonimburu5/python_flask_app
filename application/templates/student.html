@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+{% block title %} Students {% endblock %}
+
+{% block content %}
+
+<style>
+    .modal-confirm{
+        padding: 20px;
+        border-radius: 5px;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+    }
+    .modal-confirm .modal-footer{
+        border: none;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 13px;
+        padding: 10px 15px 25px;
+    }
+    .modal-confirm .modal-title{
+        text-align: center;
+    }
+    .avatar-upload {
+        position: relative;
+        max-width: 205px;
+        margin: 50px auto;
+        .avatar-edit {
+            position: absolute;
+            right: 12px;
+            z-index: 1;
+            top: 10px;
+            input {
+                display: none;
+                + label {
+                    display: inline-block;
+                    width: 34px;
+                    height: 34px;
+                    margin-bottom: 0;
+                    border-radius: 100%;
+                    background: #FFFFFF;
+                    border: 1px solid transparent;
+                    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+                    cursor: pointer;
+                    font-weight: normal;
+                    transition: all .2s ease-in-out;
+                    &:hover {
+                        background: #f1f1f1;
+                        border-color: #d6d6d6;
+                    }
+                    &:after {
+                        content: "\f040";
+                        font-family: 'FontAwesome';
+                        color: #757575;
+                        position: absolute;
+                        top: 10px;
+                        left: 0;
+                        right: 0;
+                        text-align: center;
+                        margin: auto;
+                    }
+                }
+            }
+        }
+        .avatar-preview {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            /* border-radius: 100%; */
+            border: 6px solid #F8F8F8;
+            box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+            > div {
+                width: 100%;
+                height: 100%;
+                /* border-radius: 100%; */
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+        }
+    }
+</style>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">Students Record Details</h4>
+
+            <div class="page-title-right d-none">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Course</a></li>
+                    <li class="breadcrumb-item active">Details</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table align-middle table-nowrap mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="align-middle d-none">Ref</th>
+                                <th class="align-middle">AdmNo</th>
+                                <th class="align-middle">Students Name</th>
+                                <th class="align-middle">Email Address</th>
+                                <th class="align-middle">Phone Number</th>
+                                <th class="align-middle">County</th>
+                                <th class="align-middle">Course Code</th>
+                                <th class="align-middle">Course Name</th>
+                                <th class="align-middle">Created On</th>
+                                <th class="align-middle">
+                                    <button type="button" class="btn btn-primary btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".createModal"> <i class="fas fa-plus-circle"></i> New Student</button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td class="d-none">{{ student.Id }}</td>
+                                <td>{{ student.AdmNo }}</td>
+                                <td>{{ student.FullNames }} </td>
+                                <td>{{ student.EmailAddress }} </td>
+                                <td>{{ student.PhoneNumber }} </td>
+                                <td>{{ student.County }} </td>
+                                <td>{{ student.Code }} </td>
+                                <td>{{ student.Name }} </td>
+                                <td>{{ student.CreatedOn.strftime('%Y-%m-%d') }} </td>
+                                <td>
+                                    <a href="{{ url_for('student_ctrl.studentEdit_page', id=student.Id) }}" type="button" class="btn btn-info btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#editModal-{{student.Id}}">
+                                        <i class="fas fa-edit"></i></a>
+                                    <a href="{{ url_for('student_ctrl.delete_student_page', id=student.Id) }}" type="button" class="btn btn-danger btn-sm btn-rounded waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#deleteModal-{{student.Id}}">
+                                        <i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end table-responsive -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<!-- Modal  modal-dialog-centered  -->
+<div class="modal fade createModal" tabindex="-1" role="dialog" aria-labelledby="transaction-detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transaction-detailModalLabel">Create New Students</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('student_ctrl.Student_Page') }}" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="avatar-upload mt-1">
+                                <div class="avatar-edit">
+                                    <input type="file" id="imageUpload" name="student_profile" accept=".png, .jpg, .jpeg" /> <label for="imageUpload"></label>
+                                </div>
+                                <div class="avatar-preview">
+                                    <div id="imagePreview" style="background-image: url('/static/assets/profile/defaultIcon.png');"> </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Student Admission Number</label>
+                                        <input type="text" name="AdmNo" placeholder="enter student admission number" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Student Names</label>
+                                        <input type="text" name="FullNames" placeholder="enter student name" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" name="EmailAddress" placeholder="enter student email address" oninput="this.value = this.value.toLowerCase()" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="text" name="PhoneNumber" placeholder="enter student phone number" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">County</label>
+                                        <input type="text" name="County" placeholder="enter student county" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Course Name</label>
+                                        <select name="CourseId" class="form-select form-control">
+                                            <option value="">Select Course</option>
+                                            {% for course in courses %}
+                                                <option value="{{ course.Id }}">{{ course.Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Create Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+
+{% for student in students %}
+<!-- Modal  modal-dialog-centered  -->
+<div class="modal fade" id="editModal-{{student.Id}}" tabindex="-1" role="dialog" aria-labelledby="transaction-detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transaction-detailModalLabel">Edit Students Record - {{ student.FullNames }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('student_ctrl.studentEdit_page', id=student.Id) }}" method="post">
+                <div class="modal-body">
+                    <div class="row mb-1">
+                        <div class="col-3">
+                            <div class="avatar-upload mt-1">
+                                <div class="avatar-edit">
+                                    <input type="file" id="imageEditUpload" name="student_profile" accept=".png, .jpg, .jpeg" /> <label for="imageEditUpload"></label>
+                                </div>
+                                <div class="avatar-preview">
+                                    <div id="imageEditPreview" style="background-image: url('/static/assets/profile/{{student.StudentProfile}}');"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Student Admission Number</label>
+                                        <input type="text" name="AdmNo" value="{{ student.AdmNo }}" placeholder="enter student admission number" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Student Names</label>
+                                        <input type="text" name="FullNames" value="{{ student.FullNames }}" placeholder="enter student name" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" name="EmailAddress" value="{{ student.EmailAddress }}" placeholder="enter student email address" oninput="this.value = this.value.toLowerCase()" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="text" name="PhoneNumber" value="{{ student.PhoneNumber }}" placeholder="enter student phone number" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">County</label>
+                                        <input type="text" name="County" value="{{ student.County }}" placeholder="enter student county" oninput="this.value = this.value.toUpperCase()" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Course Name</label>
+                                        <select name="CourseId" class="form-select form-control">
+                                            <option value="">Select Course</option>
+                                            {% for course in courses %}
+                                                <option value="{{ course.Id }}" {% if course.Id == student.CourseId %} selected {% endif %}>{{ course.Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Update Student Records</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+{% endfor %}
+
+{% for student in students %}
+<div class="modal fade" id="deleteModal-{{ student.Id }}" tabindex="-1" role="dialog" aria-labelledby="transaction-deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-confirm modal-dialog-centered modal-m" role="document">
+        <div class="modal-content">
+            <form action="{{ url_for('student_ctrl.delete_student_page', id=student.Id) }}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="transaction-deleteModal" style="font-size: 25px;"> <i class="fas fa-trash"></i> </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-1">
+                        <div class="form-group">
+                            <div class="col-12">
+                                <h6 class="modal-title"> Do You Want To Delete <b>{{ student.FullNames }}</b> ? </h6>
+                                <h6>Please Confirm Before Deleting, Once You confirm, {{ student.FullNames }} wont be available again!</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="form-group">
+                            <div class="col-12">
+                                <input type="hidden" name="Id" value="{{student.Id}}" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-m" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-m"><i class="bx bxs-trash"></i> Delete Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script src="{{ url_for('static', filename='assets/libs/jquery/jquery.min.js') }}"></script>
+<script>
+    $(document).ready(function(){
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imagePreview').css('background-image', 'url('+ e.target.result +')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').css({ opacity: 0 }).show().animate({ opacity: 1 }, 300);
+                    //$('#imagePreview').fadeIn(300);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageUpload").change(function() {
+            readURL(this);
+        });
+
+        //edit uploads
+        function editReadUrl(input){
+            if(input.files && input.files[0]){
+                var reader = new FileReader();
+                reader.onload = function(e){
+                    $("#imageEditPreview").css('background-image', 'url('+ e.target.result +')');
+                    $("#imageEditPreview").hide();
+                    $("#imageEditPreview").css({ opacity: 0 }).show().animate({ opacity: 1 }, 300);
+                    //$('#imageEditPreview').fadeIn(300);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageEditUpload").change(function() {
+            editReadUrl(this);
+        });
+    });
+</script>
+{% endblock %}
