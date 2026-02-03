@@ -34,7 +34,7 @@ def Book_Edit(id):
     if request.method == "POST":
         data = request.form
         bookService.editBooks(id, data)
-        flash(f'successfully updated books ({data.get('book_tittle')}) records', 'success')
+        flash(f'successfully updated books ({data.get("book_tittle")}) records', 'success')
         return redirect(url_for("book_ctrl.Book_Page"))
 
 @book_ctrl.route("/delete/<int:id>", methods=["GET", "POST"])

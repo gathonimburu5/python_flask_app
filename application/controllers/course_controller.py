@@ -15,7 +15,7 @@ def Index_Page():
     if request.method == 'POST':
         data = request.form
         courseService.createCourse(data)
-        flash(f'successfully created course ({data.get('Name')}) record', 'success')
+        flash(f'successfully created course ({data.get("Name")}) record', 'success')
         return redirect(url_for('course_ctr.Index_Page'))
 
 @course_ctr.route("/edit/<int:id>", methods=['GET', 'POST'])
