@@ -8,7 +8,7 @@ def application_run():
         app.config.from_object("application.config.ProductionConfig")
 
     db.init_app(app)
-    migrate.init_app(app, db)
+    #migrate.init_app(app, db)
     login.init_app(app)
     bcrypt.init_app(app)
     mail.init_app(app)

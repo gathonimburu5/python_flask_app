@@ -1,26 +1,35 @@
 version: '3.8'
 services:
-  app:
-    container_name: app
-    image: book-site:latest
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      - DB_URL=postgresql://postgres:postgres@book_db:5432/SkoteDb
-    depends_on:
-      - book_db
   book_db:
     container_name: book_db
     image: postgres:15
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=@Paulmburu5
       - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=@Paulmburu5
       - POSTGRES_DB=SkoteDb
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+
+  adminer:
+    container_name: adminer
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+
+  app:
+    container_name: app
+    image: book-site:latest
+    build: .
+    ports:
+      - "8081:8081"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_DEBUG=1
+    command: flask run --host=0.0.0.0 --port=8081
 
 volumes:
-  pgdata: {}
+  db_data:
+

@@ -12,7 +12,7 @@ class Config():
     DB_URL = 'postgresql://{user}:{pswd}@{url}:{port}/{db}?application_name=skoteApp'.format(user=DB_USERNAME, pswd=DB_PASSWORD, url=POSTGRES_URL, port=POSTGRES_PORT, db=POSTGRES_DB)
 
     SQLALCHEMY_DATABASE_URI = DB_URL
-    SQLALCHEMY_TRACK_MODIFICATION = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_BINDS = { 'SkoteDb':DB_URL }
     
     SECRET_KEY = secrets.token_hex(16)
